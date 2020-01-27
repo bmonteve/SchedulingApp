@@ -16,10 +16,13 @@ body {
   
   .jumbotron {
     text-align: center;
-    background-color: transparent;
-    color: black;
+    /* background-color: transparent; */
+    background: url("https://patch.com/img/cdn20/users/22992871/20180627/094635/styles/raw/public/processed_images/northern_lights-1530107173-7486.jpg?width=725");
+    background-size: cover;
+    color: whitesmoke;
+    text-shadow: -1px 0 rgb(147, 6, 241), 0 1px black;
     border-radius: 0;
-    border-bottom: 10px solid black;
+    border-bottom: 10px double black;
   }
   
   .description{
@@ -73,8 +76,4 @@ body {
   .saveBtn i:hover {
     font-size: 20px;
     transition: all .3s ease-in-out;
-  }
-
-  .container{
-
   }

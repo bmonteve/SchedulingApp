@@ -3,12 +3,19 @@ var keyDate = moment().get('date');
 var currentHour = moment().hour();
 $("#currentDay").text(date);
 
+updateTime();
+
+setInterval(function(){
+    updateTime();
+}, 1000);
+
+
 if (keyDate != localStorage.getItem("date")){
     localStorage.clear();
     localStorage.setItem("date", keyDate);
 }
 
-for (index = 9; index < 18; index++){
+for (index = 7; index < 20; index++){
     $(".container").append(makeBlocks(index));
 }
 
@@ -38,18 +45,25 @@ function makeBlocks (i){
         event.val(localStorage.getItem(i));
         hour.append(time);
         hour.append(event);
+        if (event.hasClass("past")){
+            save.attr("disabled", true);
+            save.attr("style", "color: rgb(131, 188, 201)");
+        }
         hour.append(save);
     }
     else{
         hour.attr("val", (i-12));
-        event.addClass (hourBack(i-12));
+        event.addClass (hourBack(i));
         event.val(localStorage.getItem(i-12));
         
-
         if (i == 12)
             time.text((i) + " PM");
         else{
             time.text((i-12) + " PM");
+        }
+        if (event.hasClass("past")){
+            save.attr("disabled", true);
+            save.attr("style", "color: rgb(131, 188, 201)");
         }
         hour.append(time);
         hour.append(event);
@@ -57,6 +71,10 @@ function makeBlocks (i){
     }
     
     return hour;
+}
+
+function updateTime(){
+    $("#currentTime").text(moment().format("LTS"));
 }
 
 $(".saveBtn").on("click", function (){
