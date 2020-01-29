@@ -34,25 +34,19 @@ body {
     border-radius: 15px;
   }
   
-  .previous{
-    /* margin-bottom: 5px; */
-    padding: 2px 7px;
+  .move{
+    padding: 2px 14px;
+    border-radius: 10px;
   }
 
   .lead{
     white-space: pre-wrap;
   }
 
-  .next{
-    /* margin-bottom: 5px; */
-    padding: 2px 7px;
-  }
-
   .row {
     white-space: pre-wrap;
     height: 80px;
     border-top: 1px solid white;
-
   }
   
   .hour {
@@ -106,4 +100,10 @@ body {
 
   #currentTime{
       margin-top: 5px;
+  }
+
+  .clear{
+      padding: 10px;
+      border-radius: 20px;
+      margin: 20px 10px 0px;
   }
