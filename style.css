@@ -34,6 +34,20 @@ body {
     border-radius: 15px;
   }
   
+  .previous{
+    /* margin-bottom: 5px; */
+    padding: 2px 7px;
+  }
+
+  .lead{
+    white-space: pre-wrap;
+  }
+
+  .next{
+    /* margin-bottom: 5px; */
+    padding: 2px 7px;
+  }
+
   .row {
     white-space: pre-wrap;
     height: 80px;
@@ -73,7 +87,23 @@ body {
     width: 15%;
   }
   
-  .saveBtn i:hover {
+  .saveBtn:hover i{
     font-size: 20px;
-    transition: all .3s ease-in-out;
+    transition: all .2s ease-in-out;
+  }
+
+  .saveBtn i.disabled{
+    opacity: 50%;
+    font-size: 24px;
+    transition: none;
+  }
+
+  #currentDay{
+      display: inline;
+      padding: 5px;
+      
+  }
+
+  #currentTime{
+      margin-top: 5px;
   }
