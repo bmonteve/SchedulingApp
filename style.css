@@ -22,7 +22,7 @@ body {
     color: whitesmoke;
     text-shadow: -1px 0 rgb(147, 6, 241), 0 1px black;
     border-radius: 0;
-    border-bottom: 10px double black;
+    border-bottom: 10px double rgb(119, 117, 117);
   }
   
   .description{
