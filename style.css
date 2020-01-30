@@ -16,6 +16,7 @@ body {
   
   .jumbotron {
     text-align: center;
+    margin-bottom: 15px;
     /* background-color: transparent; */
     background: url("https://patch.com/img/cdn20/users/22992871/20180627/094635/styles/raw/public/processed_images/northern_lights-1530107173-7486.jpg?width=725");
     background-size: cover;
@@ -27,6 +28,8 @@ body {
   
   .description{
     white-space: pre-wrap;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
   }
   
   .time-block{
@@ -37,6 +40,7 @@ body {
   .move{
     padding: 2px 14px;
     border-radius: 10px;
+    opacity: 75%;
   }
 
   .lead{
@@ -45,14 +49,16 @@ body {
 
   .row {
     white-space: pre-wrap;
-    height: 80px;
+    height: 60px;
     border-top: 1px solid white;
+    margin-bottom: 10px;
   }
   
   .hour {
     background-color: #ffffff;
     color: #000000;
     border-top: 1px dashed #000000;
+    border-bottom: 1px dashed #000000;
     width: 15%;
     padding-top: 15px;
   }
@@ -106,4 +112,5 @@ body {
       padding: 10px;
       border-radius: 20px;
       margin: 20px 10px 0px;
+      opacity: 75%;
   }

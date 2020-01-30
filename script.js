@@ -1,16 +1,29 @@
 //Creates and tracks current date and hour, while also showing that on the browser
 var date = moment().format('dddd, MMMM Do');
-var keyDate = moment().get('date');
 var currentHour = moment().hour();
 $("#currentDay").text(date);
+var dayEvents = [];
+var dateIndex = 0;
+
+function checkStorage(){
+if (localStorage.getItem(date)!= null){
+    dayEvents = JSON.parse(localStorage.getItem(date));
+}
+else 
+    dayEvents = ["","","","","","","","","","","","",""];
+}
 
 //displays blocks for 7am to 7p on the browser
-for (index = 7; index < 20; index++){
-    $(".container").append(makeBlocks(index));
+function addToContainer (){
+    checkStorage();
+    for (index = 7; index < 20; index++){
+        $(".container").append(makeBlocks(index));
+    }
 }
 
 //first call to run time and update row colors 
 updateTime();
+addToContainer();
 updateRow();
 
 //interval to update time and row colors in real time w/o requirement for a page refresh
@@ -18,14 +31,6 @@ setInterval(function(){
     updateTime();
     updateRow();
 }, 1000);
-
-//sets current day events to local storage, and clears out storage when a new day begins
-/*will adjust functionality of the local storage calls when next and previous day buttons
-are made functional*/
-if (keyDate != localStorage.getItem("date")){
-    localStorage.clear();
-    localStorage.setItem("date", keyDate);
-}
 
 //creates the indivual rows for each hour of my current work day 
 function makeBlocks (i){
@@ -43,7 +48,7 @@ function makeBlocks (i){
         time.text((i-12) + " PM");
 
     hour.attr("val", i);
-    event.val(localStorage.getItem(i));
+    event.val(dayEvents[i-7]);
     icon.html("assignment_returned");
     save.append(icon);
 
@@ -60,17 +65,64 @@ function hourBack(){
     currentHour = moment().hour();
     
     if (currentHour > index){
-        $(this).removeClass("present");
-        $(this).addClass("past");
-        $(this).find("i").addClass("disabled");
-        $(this).find(".saveBtn").attr("disabled",true);
+        if (dateIndex == 0){
+            $(this).removeClass("present");
+            $(this).removeClass("future");
+            $(this).addClass("past");
+            $(this).find("i").addClass("disabled");
+            $(this).find(".saveBtn").attr("disabled",true);
+        }
+        else if (dateIndex > 0){
+            $(this).removeClass("past present")
+            $(this).addClass("future");
+            $(this).find("i").removeClass("disabled");
+            $(this).find(".saveBtn").attr("disabled",false);
+        }
+        else {
+            $(this).removeClass("future present")
+            $(this).addClass("past");
+            $(this).find("i").addClass("disabled");
+            $(this).find(".saveBtn").attr("disabled",true);
+        }
     }
     else if (currentHour < index){
-        $(this).addClass("future");
+        if (dateIndex == 0){
+            $(this).addClass("future");
+            $(this).find("i").removeClass("disabled");
+            $(this).find(".saveBtn").attr("disabled",false);
+        }
+        else if (dateIndex > 0){
+            $(this).removeClass("past present")
+            $(this).addClass("future");
+            $(this).find("i").removeClass("disabled");
+            $(this).find(".saveBtn").attr("disabled",false);
+        }
+        else {
+            $(this).removeClass("future present")
+            $(this).addClass("past");
+            $(this).find("i").addClass("disabled");
+            $(this).find(".saveBtn").attr("disabled",true);
+        }
     }
     else {
-        $(this).removeClass("future");
-        $(this).addClass("present");
+        if (dateIndex == 0){
+            $(this).removeClass("future");
+            $(this).addClass("present");
+            $(this).find("i").removeClass("disabled");
+            $(this).find(".saveBtn").attr("disabled",false);
+        }
+        else if (dateIndex > 0){
+            $(this).removeClass("past present");
+            $(this).addClass("future");
+            $(this).find("i").removeClass("disabled");
+            $(this).find(".saveBtn").attr("disabled",false);
+        }
+        else {
+            $(this).removeClass("future present")
+            $(this).addClass("past");
+            $(this).find("i").addClass("disabled");
+            $(this).find(".saveBtn").attr("disabled",true);
+        }
     }
 }
 
@@ -85,11 +137,13 @@ function updateTime(){
     $("#currentTime").text(moment().format("LTS"));
 }
 
-//adds functionality to the save buttons for each row, is disable when row has class of past
+//adds functionality to the save buttons for each row, is disabled when row has class of past
 $(".saveBtn").on("click", function (){
     var time = $(this).parent().attr("val");
     var event = $(this).parent().find("textArea").val()
-    localStorage.setItem(time, event);
+    dayEvents[(parseInt(time)-7)] = event;
+    console.log(date);
+    localStorage.setItem(date, JSON.stringify(dayEvents));
 })
 
 //ADD Dom elements, Make the event row a button to bring up pop up
@@ -97,6 +151,40 @@ $(".saveBtn").on("click", function (){
     //Have event row only show event title
     //Make past rows uneditable
 
+$(".previous").on("click", function (){
+    dateIndex--;
+    hourBack();
+    date = moment().add(dateIndex, "days").format('dddd, MMMM Do');
+    checkStorage();
+    localStorage.setItem(date, JSON.stringify(dayEvents));
+    $("#currentDay").text(date);
+    index = 7;
+    $(".row").each(function(){
+        $(this).find("textarea").val(dayEvents[index-7]);
+        index++;
+    })
+    console.log(dateIndex);
+})
+
+$(".next").on("click", function (){
+    dateIndex++;
+    hourBack();
+    date = moment().add(dateIndex, "days").format('dddd, MMMM Do');
+    checkStorage();
+    localStorage.setItem(date, JSON.stringify(dayEvents));
+    $("#currentDay").text(date);
+    index = 7;
+    $(".row").each(function(){
+        $(this).find("textarea").val(dayEvents[index-7]);
+        index++;
+    })
+})
+
+
+
+
+
+localStorage.setItem(date, JSON.stringify(dayEvents));
 //Add functionality to buttons to change the date
     //Make past dates viewable but uneditable
     //reformat LocalStorage use to data from events on multiple days
