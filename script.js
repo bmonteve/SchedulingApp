@@ -13,10 +13,10 @@ else
     dayEvents = ["","","","","","","","","","","","",""];
 }
 
-//displays blocks for 7am to 7p on the browser
+//displays blocks for 6am to 10p on the browser
 function addToContainer (){
     checkStorage();
-    for (index = 7; index < 20; index++){
+    for (index = 6; index < 23; index++){
         $(".container").append(makeBlocks(index));
     }
 }
@@ -48,7 +48,7 @@ function makeBlocks (i){
         time.text((i-12) + " PM");
 
     hour.attr("val", i);
-    event.val(dayEvents[i-7]);
+    event.val(dayEvents[i-6]);
     icon.html("assignment_returned");
     save.append(icon);
 
@@ -141,7 +141,7 @@ function updateTime(){
 $(".saveBtn").on("click", function (){
     var time = $(this).parent().attr("val");
     var event = $(this).parent().find("textArea").val()
-    dayEvents[(parseInt(time)-7)] = event;
+    dayEvents[(parseInt(time)-6)] = event;
     localStorage.setItem(date, JSON.stringify(dayEvents));
 })
 
@@ -157,9 +157,9 @@ $(".previous").on("click", function (){
     checkStorage();
     localStorage.setItem(date, JSON.stringify(dayEvents));
     $("#currentDay").text(date);
-    index = 7;
+    index = 6;
     $(".row").each(function(){
-        $(this).find("textarea").val(dayEvents[index-7]);
+        $(this).find("textarea").val(dayEvents[index-6]);
         index++;
     })
 })
@@ -171,9 +171,9 @@ $(".next").on("click", function (){
     checkStorage();
     localStorage.setItem(date, JSON.stringify(dayEvents));
     $("#currentDay").text(date);
-    index = 7;
+    index = 6;
     $(".row").each(function(){
-        $(this).find("textarea").val(dayEvents[index-7]);
+        $(this).find("textarea").val(dayEvents[index-6]);
         index++;
     })
 })
@@ -182,19 +182,19 @@ $(".clearAll").on("click", function(){
     localStorage.clear();
     checkStorage();
     localStorage.setItem(date, JSON.stringify(dayEvents));
-    index = 7;
+    index = 6;
     $(".row").each(function(){
-        $(this).find("textarea").val(dayEvents[index-7]);
+        $(this).find("textarea").val(dayEvents[index-6]);
         index++;
     })
 })
 
 $(".clearCurrent").on("click", function(){
-    index = 7;
+    index = 6;
     dayEvents = ["","","","","","","","","","","","",""];
     localStorage.setItem(date, JSON.stringify(dayEvents));
     $(".row").each(function(){
-        $(this).find("textarea").val(dayEvents[index-7]);
+        $(this).find("textarea").val(dayEvents[index-6]);
         index++;
     })
 })
