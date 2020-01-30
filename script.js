@@ -142,7 +142,6 @@ $(".saveBtn").on("click", function (){
     var time = $(this).parent().attr("val");
     var event = $(this).parent().find("textArea").val()
     dayEvents[(parseInt(time)-7)] = event;
-    console.log(date);
     localStorage.setItem(date, JSON.stringify(dayEvents));
 })
 
@@ -163,7 +162,6 @@ $(".previous").on("click", function (){
         $(this).find("textarea").val(dayEvents[index-7]);
         index++;
     })
-    console.log(dateIndex);
 })
 
 $(".next").on("click", function (){
@@ -180,10 +178,26 @@ $(".next").on("click", function (){
     })
 })
 
+$(".clearAll").on("click", function(){
+    localStorage.clear();
+    checkStorage();
+    localStorage.setItem(date, JSON.stringify(dayEvents));
+    index = 7;
+    $(".row").each(function(){
+        $(this).find("textarea").val(dayEvents[index-7]);
+        index++;
+    })
+})
 
-
-
-
+$(".clearCurrent").on("click", function(){
+    index = 7;
+    dayEvents = ["","","","","","","","","","","","",""];
+    localStorage.setItem(date, JSON.stringify(dayEvents));
+    $(".row").each(function(){
+        $(this).find("textarea").val(dayEvents[index-7]);
+        index++;
+    })
+})
 localStorage.setItem(date, JSON.stringify(dayEvents));
 //Add functionality to buttons to change the date
     //Make past dates viewable but uneditable
