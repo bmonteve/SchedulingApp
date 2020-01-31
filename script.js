@@ -1,10 +1,13 @@
 //Creates and tracks current date and hour, while also showing that on the browser
 var date = moment().format('dddd, MMMM Do');
 var currentHour = moment().hour();
+var currentMin = moment().minute();
+var currentSec = moment().seconds();
 $("#currentDay").text(date);
 var dayEvents = [];
 var dateIndex = 0;
 
+//ensures that the make blocks function does not try to pull from an empty array by setting the array holding daily events 
 function checkStorage(){
 if (localStorage.getItem(date)!= null){
     dayEvents = JSON.parse(localStorage.getItem(date));
@@ -30,6 +33,7 @@ updateRow();
 setInterval(function(){
     updateTime();
     updateRow();
+    
 }, 1000);
 
 //creates the indivual rows for each hour of my current work day 
@@ -66,8 +70,7 @@ function hourBack(){
     
     if (currentHour > index){
         if (dateIndex == 0){
-            $(this).removeClass("present");
-            $(this).removeClass("future");
+            $(this).removeClass("present future");
             $(this).addClass("past");
             $(this).find("i").addClass("disabled");
             $(this).find(".saveBtn").attr("disabled",true);
@@ -132,9 +135,24 @@ function updateRow (){
     $(".row").each(hourBack);
 }
 
-//works with interval to adjust time on page without a refresh
+//works with interval to adjust time on page without a refresh, updates time enters a new day
 function updateTime(){
     $("#currentTime").text(moment().format("LTS"));
+        currentHour = moment().hour();
+        currentMin = moment().minute();
+        currentSec = moment().seconds();
+        if (currentHour == 0 && currentMin == 0 && currentSec == 0){
+            date = moment().format('dddd, MMMM Do');
+            $("#currentDay").text(date);
+        }
+}
+
+function updateBlocks (){
+    var index = 6;
+    $(".row").each(function(){
+        $(this).find("textarea").val(dayEvents[index-6]);
+        index++;
+    })
 }
 
 //adds functionality to the save buttons for each row, is disabled when row has class of past
@@ -145,10 +163,6 @@ $(".saveBtn").on("click", function (){
     localStorage.setItem(date, JSON.stringify(dayEvents));
 })
 
-//ADD Dom elements, Make the event row a button to bring up pop up
-    //Add edit button to show form input/edit details
-    //Have event row only show event title
-    //Make past rows uneditable
 
 $(".previous").on("click", function (){
     dateIndex--;
@@ -157,11 +171,7 @@ $(".previous").on("click", function (){
     checkStorage();
     localStorage.setItem(date, JSON.stringify(dayEvents));
     $("#currentDay").text(date);
-    index = 6;
-    $(".row").each(function(){
-        $(this).find("textarea").val(dayEvents[index-6]);
-        index++;
-    })
+    updateBlocks();
 })
 
 $(".next").on("click", function (){
@@ -171,36 +181,27 @@ $(".next").on("click", function (){
     checkStorage();
     localStorage.setItem(date, JSON.stringify(dayEvents));
     $("#currentDay").text(date);
-    index = 6;
-    $(".row").each(function(){
-        $(this).find("textarea").val(dayEvents[index-6]);
-        index++;
-    })
+    updateBlocks();
 })
 
 $(".clearAll").on("click", function(){
     localStorage.clear();
     checkStorage();
     localStorage.setItem(date, JSON.stringify(dayEvents));
-    index = 6;
-    $(".row").each(function(){
-        $(this).find("textarea").val(dayEvents[index-6]);
-        index++;
-    })
+    updateBlocks();
 })
 
 $(".clearCurrent").on("click", function(){
     index = 6;
     dayEvents = ["","","","","","","","","","","","",""];
     localStorage.setItem(date, JSON.stringify(dayEvents));
-    $(".row").each(function(){
-        $(this).find("textarea").val(dayEvents[index-6]);
-        index++;
-    })
+    updateBlocks();
 })
-localStorage.setItem(date, JSON.stringify(dayEvents));
-//Add functionality to buttons to change the date
-    //Make past dates viewable but uneditable
-    //reformat LocalStorage use to data from events on multiple days
-    //eventually add calendar format to choose date instead of back and forward buttons
+
+//ADD Dom elements, Make the event row a button to bring up pop up
+    //Add edit button to show form input/edit details
+    //Have event row only show event title
+    //Make past rows uneditable
+
+//eventually add calendar format to choose date instead of back and forward buttons
 
