@@ -7,6 +7,17 @@ $("#currentDay").text(date);
 var dayEvents = [];
 var dateIndex = 0;
 
+//first call to run time and update row colors 
+updateTime();
+addToContainer();
+updateRow();
+
+//interval to update time and row colors in real time w/o requirement for a page refresh
+setInterval(function(){
+    updateTime();
+    updateRow();
+}, 1000);
+
 //ensures that the make blocks function does not try to pull from an empty array by setting the array holding daily events 
 function checkStorage(){
 if (localStorage.getItem(date)!= null){
@@ -23,18 +34,6 @@ function addToContainer (){
         $(".container").append(makeBlocks(index));
     }
 }
-
-//first call to run time and update row colors 
-updateTime();
-addToContainer();
-updateRow();
-
-//interval to update time and row colors in real time w/o requirement for a page refresh
-setInterval(function(){
-    updateTime();
-    updateRow();
-    
-}, 1000);
 
 //creates the indivual rows for each hour of my current work day 
 function makeBlocks (i){
@@ -63,70 +62,43 @@ function makeBlocks (i){
     return hour;
 }
 
-//adds a past, present, or future class to adjust the css to the row based on the current hour
+//determines what class a block needs based on the day and current hour to allow css adjustment
 function hourBack(){
     var index = parseInt($(this).attr("val"));
     currentHour = moment().hour();
     
-    if (currentHour > index){
-        if (dateIndex == 0){
-            $(this).removeClass("present future");
-            $(this).addClass("past");
-            $(this).find("i").addClass("disabled");
-            $(this).find(".saveBtn").attr("disabled",true);
-        }
-        else if (dateIndex > 0){
-            $(this).removeClass("past present")
-            $(this).addClass("future");
-            $(this).find("i").removeClass("disabled");
-            $(this).find(".saveBtn").attr("disabled",false);
-        }
+    if (dateIndex == 0){
+        if (currentHour > index)
+            addPast($(this));
+        else if (currentHour < index)
+            addFuture($(this));
         else {
-            $(this).removeClass("future present")
-            $(this).addClass("past");
-            $(this).find("i").addClass("disabled");
-            $(this).find(".saveBtn").attr("disabled",true);
-        }
-    }
-    else if (currentHour < index){
-        if (dateIndex == 0){
-            $(this).addClass("future");
-            $(this).find("i").removeClass("disabled");
-            $(this).find(".saveBtn").attr("disabled",false);
-        }
-        else if (dateIndex > 0){
-            $(this).removeClass("past present")
-            $(this).addClass("future");
-            $(this).find("i").removeClass("disabled");
-            $(this).find(".saveBtn").attr("disabled",false);
-        }
-        else {
-            $(this).removeClass("future present")
-            $(this).addClass("past");
-            $(this).find("i").addClass("disabled");
-            $(this).find(".saveBtn").attr("disabled",true);
-        }
-    }
-    else {
-        if (dateIndex == 0){
             $(this).removeClass("future");
             $(this).addClass("present");
             $(this).find("i").removeClass("disabled");
             $(this).find(".saveBtn").attr("disabled",false);
-        }
-        else if (dateIndex > 0){
-            $(this).removeClass("past present");
-            $(this).addClass("future");
-            $(this).find("i").removeClass("disabled");
-            $(this).find(".saveBtn").attr("disabled",false);
-        }
-        else {
-            $(this).removeClass("future present")
-            $(this).addClass("past");
-            $(this).find("i").addClass("disabled");
-            $(this).find(".saveBtn").attr("disabled",true);
-        }
+         }
     }
+    else if (dateIndex > 0)
+        addFuture($(this));
+    else
+        addPast($(this));
+}
+
+//adds the correct future class to a block based on the hour and day
+function addFuture(obj){
+    $(obj).removeClass("past present")
+    $(obj).addClass("future");
+    $(obj).find("i").removeClass("disabled");
+    $(obj).find(".saveBtn").attr("disabled",false);
+}
+
+//adds the correct past class to a block based on the hour and day
+function addPast(obj){
+    $(obj).removeClass("future present")
+    $(obj).addClass("past");
+    $(obj).find("i").addClass("disabled");
+    $(obj).find(".saveBtn").attr("disabled",true);
 }
 
 //works with the interval to check each element with the row class to update the background color
@@ -147,6 +119,7 @@ function updateTime(){
         }
 }
 
+//updates the blocks based on the stored days array of events
 function updateBlocks (){
     var index = 6;
     $(".row").each(function(){
@@ -163,7 +136,7 @@ $(".saveBtn").on("click", function (){
     localStorage.setItem(date, JSON.stringify(dayEvents));
 })
 
-
+//allows the user to go the previous days to check their calendar. Creates a new storage key if the dates has not already been used
 $(".previous").on("click", function (){
     dateIndex--;
     hourBack();
@@ -174,6 +147,7 @@ $(".previous").on("click", function (){
     updateBlocks();
 })
 
+//allows the user to go the next days to check their calendar. Creates a new storage key for that day
 $(".next").on("click", function (){
     dateIndex++;
     hourBack();
@@ -184,6 +158,7 @@ $(".next").on("click", function (){
     updateBlocks();
 })
 
+//clears all the stored days and events, in the event that the total stored days overload storage and more space is need
 $(".clearAll").on("click", function(){
     localStorage.clear();
     checkStorage();
@@ -191,6 +166,7 @@ $(".clearAll").on("click", function(){
     updateBlocks();
 })
 
+//clears the current day's events only 
 $(".clearCurrent").on("click", function(){
     index = 6;
     dayEvents = ["","","","","","","","","","","","",""];
