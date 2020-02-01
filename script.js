@@ -110,13 +110,16 @@ function updateRow (){
 //works with interval to adjust time on page without a refresh, updates time enters a new day
 function updateTime(){
     $("#currentTime").text(moment().format("LTS"));
-        currentHour = moment().hour();
-        currentMin = moment().minute();
-        currentSec = moment().seconds();
-        if (currentHour == 0 && currentMin == 0 && currentSec == 0){
-            date = moment().format('dddd, MMMM Do');
-            $("#currentDay").text(date);
-        }
+    currentHour = moment().hour();
+    currentMin = moment().minute();
+    currentSec = moment().seconds();
+    if (currentHour < 1 && currentMin < 1 && currentSec < 1){
+        date = moment().format('dddd, MMMM Do');
+        checkStorage();
+        localStorage.setItem(date, JSON.stringify(dayEvents));
+        $("#currentDay").text(date);
+        updateBlocks();
+    }
 }
 
 //updates the blocks based on the stored days array of events
@@ -139,7 +142,6 @@ $(".saveBtn").on("click", function (){
 //allows the user to go the previous days to check their calendar. Creates a new storage key if the dates has not already been used
 $(".previous").on("click", function (){
     dateIndex--;
-    hourBack();
     date = moment().add(dateIndex, "days").format('dddd, MMMM Do');
     checkStorage();
     localStorage.setItem(date, JSON.stringify(dayEvents));
@@ -150,7 +152,6 @@ $(".previous").on("click", function (){
 //allows the user to go the next days to check their calendar. Creates a new storage key for that day
 $(".next").on("click", function (){
     dateIndex++;
-    hourBack();
     date = moment().add(dateIndex, "days").format('dddd, MMMM Do');
     checkStorage();
     localStorage.setItem(date, JSON.stringify(dayEvents));
@@ -170,7 +171,8 @@ $(".clearAll").on("click", function(){
 $(".clearCurrent").on("click", function(){
     index = 6;
     dayEvents = ["","","","","","","","","","","","",""];
-    localStorage.setItem(date, JSON.stringify(dayEvents));
+    localStorage.removeItem(date);
+    //localStorage.setItem(date, JSON.stringify(dayEvents));
     updateBlocks();
 })
 
